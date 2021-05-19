@@ -28,23 +28,31 @@ Copyright M.Bulacu and L.Schomaker 2009,2016
 # include <unistd.h>
 
 typedef struct {
-   unsigned char r;
-   unsigned char g;
-   unsigned char b;
+   int r;
+   int g;
+   int b;
 } Pixel;
 
 
-// Reads a gray-scale image in RAW PPM format from stdin
-Pixel ** read_ppm_stdin( int * h, int * w )
+// Reads a gray-scale image in RAW PPM format
+Pixel ** read_ppm( char * image_name, int * h, int * w )
 {
 	Pixel ** image;
+	FILE *fp;
 	char buf[1024];
 	char c;
 	int i, j, l;
 
 
+	fp = fopen(image_name, "rb");
+	if (fp == NULL)
+	   {
+		  perror("Error while opening the file.\n");
+		  exit(EXIT_FAILURE);
+	   }
+
 	// Read the PGM header and check it
-	fscanf(stdin, "%s\n", buf);
+	fscanf(fp, "%s\n", buf);
 	if ( strcmp(buf, "P6") != 0 )
 	{
 		fprintf(stderr, "\n! Error: The input is not in RAW PPM format (P6).\n");
@@ -52,17 +60,19 @@ Pixel ** read_ppm_stdin( int * h, int * w )
 	}
 
 	// Read the comment lines
-	while( (c = fgetc(stdin)) == '#' )
+	//fscanf(fp, "%s\n", buf);
+	//if ( strcmp(buf, "P6") != 0 )
+	while( (c = fgetc(fp)) == '#' )
 	{
-		fgets(buf, 1023, stdin);
+		fgets(buf, 1023, fp);  // read one line
 	}
-	ungetc(c, stdin);
+	ungetc(c, fp);
 
 	// Read image width and height
-	fscanf(stdin, "%i", w);
-	fscanf(stdin, "%i", h);
-	fscanf(stdin, "%i", &l);
-	c = fgetc(stdin); /* read newline */
+	fscanf(fp, "%i", w);
+	fscanf(fp, "%i", h);
+	fscanf(fp, "%i", &l);
+	c = fgetc(fp); /* read newline */
 
 	// Allocate the image
 	image = (Pixel **) malloc( (*h) * sizeof(Pixel *) );
@@ -76,42 +86,13 @@ Pixel ** read_ppm_stdin( int * h, int * w )
 	{
 		for ( j = 0; j < (*w); j ++ )
 		{
-			image[i][j].r = fgetc( stdin );
-			image[i][j].g = fgetc( stdin );
-			image[i][j].b = fgetc( stdin );
+			image[i][j].r = fgetc( fp );
+			image[i][j].g = fgetc( fp );
+			image[i][j].b = fgetc( fp );
 		}
 	}
 
 	return image;
-}
-
-
-// Writes a RGB image in RAW PPM format to stdout
-void write_ppm_stdout( Pixel ** image, const int h, const int w )
-{
-	int i, j;
-
-	// Write the PGM file header
-	fprintf(stdout, "P6\n");
-	fprintf(stdout, "# CREATOR: imagemorph.\n");
-	fprintf(stdout, "%i %i\n", w, h);
-	fprintf(stdout, "255\n");
-
-	// Write the pixel data
-	for ( i = 0; i < h; i ++ )
-	{
-		for ( j = 0; j < w; j ++ )
-		{
-			fputc((int) image[i][j].r, stdout);
-			fputc((int) image[i][j].g, stdout);
-			fputc((int) image[i][j].b, stdout);
-		}
-	}
-
-	// Flush the data
-	fflush( stdout );
-
-	return;
 }
 
 
@@ -376,32 +357,13 @@ void rubbersheet( Pixel ** input, Pixel ** output, const int h, const int w,
 }
 
 
-int main( int argc, char ** argv )
+Pixel ** imagemorph( Pixel ** input, int h, int w, double amp, double sigma )
 {
-	int h, w;
-	Pixel ** input;
 	Pixel ** output;
-
-	float amp;
-	float sigma;
 	int i;
-
 
 // Seed the random number generator
 	srand48( (unsigned int)getpid( ) + (unsigned int) time( NULL ) );
-
-// Process the command line arguments
-	if ( argc != 3 )
-	{
-		fprintf( stderr, "Program usage: cat [pgm image] | %s [displacement] [smoothing radius].\n", argv[0] );
-		fprintf( stderr, "The morphed image is written to stdout.\n" );
-		exit(1);
-	}
-	amp   = atof( argv[1] );
-	sigma = atof( argv[2] );
-
-// Read in the input image
-	input = read_ppm_stdin( &h, &w );
 
 // Allocate the output image
 	output = (Pixel **) malloc( h * sizeof(Pixel *) );
@@ -413,17 +375,5 @@ int main( int argc, char ** argv )
 // Morph the image
 	rubbersheet( input, output, h, w, amp, sigma );
 
-// Write the morphed image to stdout
-	write_ppm_stdout( output, h, w );
-
-// Garbage collection
-	for ( i = 0; i < h; i ++ )
-	{
-		free( input[i] );
-		free( output[i] );
-	}
-	free( input );
-	free( output );
-
-return 0;
+	return output;
 }
