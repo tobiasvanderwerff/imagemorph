@@ -12,7 +12,7 @@ class Pixel(Structure):
                 ('b', c_int)]
 
 
-def imagemorph(img, amp, sigma):
+def imagemorph(img, amp, sigma, h, w):
     # load C library
     libname = Path.cwd() / 'imagemorph.so'
     c_lib = CDLL(libname)
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     h, w, _ = img.shape
 
     # apply imagemorph
-    res = imagemorph(img, amp, sigma)
+    res = imagemorph(img, amp, sigma, h, w)
 
     # write result to disk
     cv.imwrite('tmp/out.png', res)
