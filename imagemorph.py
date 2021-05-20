@@ -31,7 +31,8 @@ def imagemorph(img, amp, sigma, h, w):
         cwd = Path(__file__).resolve().parent  # location of this module
         libfile = list(cwd.rglob('imagemorph*.so'))[0]
     except IndexError:
-        print(f"Error: imagemorph.so could not be found.")
+        print("Error: imagemorph library could not be found. Make sure to "
+              "first compile the C library using `python setup.py build`.")
         sys.exit()
 
     c_lib = CDLL(libfile)

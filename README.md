@@ -20,21 +20,25 @@ pip install numpy opencv-python
 
 ### How to run
 
-First create a dynamic library from the C code: 
+First build and link the C library:
 
 ```
-make imagemorph.so
+python setup.py build
 ```
 
-This creates a shared library that is required for running the `imagemorph.py`
-module. For a demo of the module, run
+This will create a `build` folder, which contains the shared library that is
+required for running the `imagemorph.py` module. Make sure not to move the
+library anywhere above `imagemorph.py` in the file tree, otherwise it will not
+be found and the code will not run. 
+
+For a demo of the module, run
 
 ```
 python imagemorph.py
 ```
 
-which will apply the elastic morphing to the `sampled-input.png` image and save
-the result to `out.png`.
+which will apply the random elastic morphing to the `sampled-input.png` image
+and save the result to `out.png`.
 
 
 # imagemorph.c
