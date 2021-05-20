@@ -68,8 +68,7 @@ def imagemorph(img, amp, sigma, h, w):
 
 if __name__ == '__main__':
     amp, sigma = 1.3, 3
-    img_name = "sample-input.png"
-    #img_name = "Zwolle-rgb.ppm"
+    img_name = "img/sample-input.png"
 
     # load image
     img = cv.imread(img_name)
@@ -79,4 +78,4 @@ if __name__ == '__main__':
     res = imagemorph(img, amp, sigma, h, w)
 
     # write result to disk
-    cv.imwrite('out.png', res)
+    cv.imwrite('img/out.png', res)

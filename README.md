@@ -38,7 +38,7 @@ python imagemorph.py
 ```
 
 which will apply the random elastic morphing to the `sampled-input.png` image
-and save the result to `out.png`.
+and save the result to `img/out.png`.
 
 
 # imagemorph.c
