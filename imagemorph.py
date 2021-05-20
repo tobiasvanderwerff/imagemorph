@@ -1,3 +1,4 @@
+import sys
 from ctypes import *
 from pathlib import Path
 
@@ -13,9 +14,27 @@ class Pixel(Structure):
 
 
 def imagemorph(img, amp, sigma, h, w):
+    """ 
+    Apply random elastic morphing to an image. 
+
+    Args:
+        img: BGR image in the form of a numpy array of shape (h, w, 3). 
+        amp: average amplitude of the displacement field (average pixel displacement)
+        sigma: standard deviation of the Gaussian smoothing kernel 
+        h: height of the image
+        w: width of the image
+    """
+    assert img.shape == (h, w, 3), f"img should have shape (h, w, 3), not {img.shape}"
+
     # load C library
-    libname = Path.cwd() / 'imagemorph.so'
-    c_lib = CDLL(libname)
+    try:
+        cwd = Path(__file__).resolve().parent  # location of this module
+        libfile = list(cwd.rglob('imagemorph*.so'))[0]
+    except IndexError:
+        print(f"Error: imagemorph.so could not be found.")
+        sys.exit()
+
+    c_lib = CDLL(libfile)
 
     # load the imagemorph function from the library
     imagemorph = c_lib.imagemorph
@@ -37,7 +56,8 @@ def imagemorph(img, amp, sigma, h, w):
     # apply the imagemorph function to the image
     img_c = imagemorph(img_c, h_c, w_c, amp_c, sigma_c)
 
-    res = np.zeros((h, w, 3))
+    # convert the result to a numpy array
+    res = np.zeros((h, w, 3), dtype=np.float32)
     for i in range(h):
         for j in range(w):
             px = img_c[i][j]
