@@ -1,9 +1,11 @@
 This is a Python wrapper of the
 [imagemorph](https://github.com/GrHound/imagemorph.c) repository by Lambert
-Schomaker (see last section). Rather than using the `imagemorph` executable and
-writing the result to disk, the `imagemorph.py` module provides a Python
-wrapper function which takes as input an image and returns a morphed image,
-which is equivalent to applying the `imagemorph` executable.
+Schomaker (see last section). Rather than running a compiled executable and
+writing the resulting image to disk as in the original repo, the `imagemorph.py` 
+module provides a Python wrapper function which performs the same random elastic 
+morphing as in the original repo, but instead returns the resulting image as
+a numpy array, which can then be used for further processing in, for example,
+a machine learning pipeline.
 
 Any image type can be processed (not just .ppm), as long as it can be
 loaded with OpenCV.
