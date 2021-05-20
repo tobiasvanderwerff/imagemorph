@@ -58,4 +58,4 @@ if __name__ == '__main__':
     res = imagemorph(img, amp, sigma, h, w)
 
     # write result to disk
-    cv.imwrite('tmp/out.png', res)
+    cv.imwrite('out.png', res)

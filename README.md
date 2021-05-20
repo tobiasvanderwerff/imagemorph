@@ -34,7 +34,7 @@ python imagemorph.py
 ```
 
 which will apply the elastic morphing to the `sampled-input.png` image and save
-the result to `tmp/out.png`.
+the result to `out.png`.
 
 
 # imagemorph.c
