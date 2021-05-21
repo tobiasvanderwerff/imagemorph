@@ -29,7 +29,7 @@ def imagemorph(img, amp, sigma, h, w):
     # load C library
     try:
         cwd = Path(__file__).resolve().parent  # location of this module
-        libfile = list(cwd.rglob('imagemorph*.so'))[0]
+        libfile = list(cwd.rglob('libimagemorph*.so'))[0]
     except IndexError:
         print("Error: imagemorph library could not be found. Make sure to "
               "first compile the C library using `python setup.py build`.")
@@ -67,7 +67,7 @@ def imagemorph(img, amp, sigma, h, w):
 
 
 if __name__ == '__main__':
-    amp, sigma = 1.3, 3
+    amp, sigma = 0.9, 9
     img_name = "img/sample-input.png"
 
     # load image
