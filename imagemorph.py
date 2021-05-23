@@ -60,7 +60,7 @@ def imagemorph(img, amp, sigma, h, w):
     img_c = imagemorph(img_c, h_c, w_c, amp_c, sigma_c)
 
     # convert the result to a numpy array
-    res = np.zeros((h, w, 3), dtype=dtype)
+    res = np.zeros_like(img)
     for i in range(h):
         for j in range(w):
             px = img_c[i][j]
