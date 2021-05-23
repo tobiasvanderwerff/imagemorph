@@ -25,6 +25,8 @@ def imagemorph(img, amp, sigma, h, w):
         w: width of the image
     """
     assert img.shape == (h, w, 3), f"img should have shape (h, w, 3), not {img.shape}"
+    
+    dtype = img.dtype
 
     # load C library
     try:
@@ -58,7 +60,7 @@ def imagemorph(img, amp, sigma, h, w):
     img_c = imagemorph(img_c, h_c, w_c, amp_c, sigma_c)
 
     # convert the result to a numpy array
-    res = np.zeros((h, w, 3), dtype=np.float32)
+    res = np.zeros((h, w, 3), dtype=dtype)
     for i in range(h):
         for j in range(w):
             px = img_c[i][j]
@@ -79,3 +81,4 @@ if __name__ == '__main__':
 
     # write result to disk
     cv.imwrite('img/out.png', res)
+
