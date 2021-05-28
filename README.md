@@ -12,7 +12,7 @@ loaded with OpenCV.
 
 The code was tested on Ubuntu 16.04, using Python 3.6.
 
-### Required packages
+## Required packages
 
 Running the Python script requires `numpy` and `opencv`, which can be installed
 with pip:
@@ -21,7 +21,7 @@ with pip:
 pip install numpy opencv-python
 ```
 
-### How to run
+## How to run
 
 First build and link the C library:
 
@@ -43,6 +43,28 @@ python imagemorph.py
 which will apply the random elastic morphing to the `sampled-input.png` image
 and save the result to `img/out.png`.
 
+## Importing the imagemorph module into your code
+
+If you want to use the elastic morphing in your own Python code, first clone
+this repository to the same location as your Python code. You can then import 
+the module in your code:
+
+```python
+from imagemorph.imagemorph import elastic_morphing
+```
+
+Alternatively, if you want to store this repository in some other location, you
+can also make a symbolic link at the location where you want to import the
+module:
+
+```
+cd path/to/your/code
+ln -s imagemorph /path/to/imagemorph/folder
+```
+
+This will create a shortcut called `imagemorph` in the `path/to/your/code`
+directory, which points to the imagemorph repo at `path/to/imagemorph/folder`.
+You can then import the module as mentioned above.
 
 # imagemorph.c
 Program to apply random elastic rubbersheet  transforms to Netpbm color (.ppm) images for  augmenting training sets in machine learning/deep learning.  The program reads an input .ppm image from stdin and writes a ppm image to stdout.  Original Author: Marius Bulacu (.pgm version for characters). Adapted for .ppm and color: Lambert Schomaker
