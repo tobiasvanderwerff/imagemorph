@@ -357,7 +357,7 @@ void rubbersheet( Pixel ** input, Pixel ** output, const int h, const int w,
 }
 
 
-Pixel ** imagemorph( Pixel ** input, int h, int w, double amp, double sigma )
+Pixel ** elastic_morphing( Pixel ** input, int h, int w, double amp, double sigma )
 {
 	Pixel ** output;
 	int i;

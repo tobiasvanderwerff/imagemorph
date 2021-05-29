@@ -13,7 +13,7 @@ class Pixel(Structure):
                 ('b', c_int)]
 
 
-def imagemorph(img, amp, sigma, h, w):
+def elastic_morphing(img, amp, sigma, h, w):
     """ 
     Apply random elastic morphing to an image. 
 
@@ -26,8 +26,6 @@ def imagemorph(img, amp, sigma, h, w):
     """
     assert img.shape == (h, w, 3), f"img should have shape (h, w, 3), not {img.shape}"
     
-    dtype = img.dtype
-
     # load C library
     try:
         cwd = Path(__file__).resolve().parent  # location of this module
@@ -39,10 +37,10 @@ def imagemorph(img, amp, sigma, h, w):
 
     c_lib = CDLL(libfile)
 
-    # load the imagemorph function from the library
-    imagemorph = c_lib.imagemorph
-    imagemorph.restype = POINTER(POINTER(Pixel))
-    imagemorph.argtypes = [POINTER(POINTER(Pixel)), c_int, c_int, c_double, c_double]
+    # load the elastic morphing function from the C library
+    elastic_morphing = c_lib.elastic_morphing
+    elastic_morphing.restype = POINTER(POINTER(Pixel))
+    elastic_morphing.argtypes = [POINTER(POINTER(Pixel)), c_int, c_int, c_double, c_double]
 
     # convert parameters to C compatible data types
     img_c = (h * POINTER(Pixel))()
@@ -56,8 +54,8 @@ def imagemorph(img, amp, sigma, h, w):
     amp_c, sigma_c = c_double(amp), c_double(sigma)
     h_c, w_c = c_int(h), c_int(w)
     
-    # apply the imagemorph function to the image
-    img_c = imagemorph(img_c, h_c, w_c, amp_c, sigma_c)
+    # apply the elastic morphing to the image
+    img_c = elastic_morphing(img_c, h_c, w_c, amp_c, sigma_c)
 
     # convert the result to a numpy array
     res = np.zeros_like(img)
@@ -76,8 +74,8 @@ if __name__ == '__main__':
     img = cv.imread(img_name)
     h, w, _ = img.shape
 
-    # apply imagemorph
-    res = imagemorph(img, amp, sigma, h, w)
+    # apply elastic morphing
+    res = elastic_morphing(img, amp, sigma, h, w)
 
     # write result to disk
     cv.imwrite('img/out.png', res)
